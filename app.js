@@ -18,19 +18,28 @@ function getStats(jsonObj) {
   var zipcodeMap = new HashMap();
   var cityMap = new HashMap();
 
-  var maxDuplicateParcels = 0;
+  var maxDuplicateParcel = null;
+  var maxDuplicateParcelCount = null;
+
+  var minCity = null;
+  var minCityCount = null;
 
   jsonObj.forEach(element => {
     // group by parcel
     var parcelKey = element.parcel_apn;
+    var newParcelCount;
     if (!parcelMap.has(parcelKey)) {
-      parcelMap.set(parcelKey, 1);
+      newParcelCount = 1;
     } else {
-      var currentCount = parcelMap.get(parcelKey);
-      parcelMap.set(parcelKey, currentCount + 1);
-      if (currentCount + 1 > maxDuplicateParcels) {
-        maxDuplicateParcels = currentCount + 1;
-      }
+      newParcelCount = parcelMap.get(parcelKey) + 1;
+    }
+    parcelMap.set(parcelKey, newParcelCount);
+    if (
+      maxDuplicateParcelCount == null ||
+      newParcelCount > maxDuplicateParcelCount
+    ) {
+      maxDuplicateParcelCount = newParcelCount;
+      maxDuplicateParcel = parcelKey;
     }
 
     // group by zipcode
@@ -43,10 +52,16 @@ function getStats(jsonObj) {
 
     // group by city
     var cityKey = element.ststate + "-" + element.stcity;
+    var newCityCount;
     if (!cityMap.has(cityKey)) {
-      cityMap.set(cityKey, 1);
+      newCityCount = 1;
     } else {
-      cityMap.set(cityKey, cityMap.get(cityKey) + 1);
+      newCityCount = cityMap.get(cityKey) + 1;
+    }
+    cityMap.set(cityKey, newCityCount);
+    if (minCityCount == null || newCityCount < minCityCount ) {
+      minCityCount = newCityCount;
+      minCity = cityKey;
     }
   });
 
@@ -60,20 +75,13 @@ function getStats(jsonObj) {
   console.log("Grouping of row count by City: " + cityMap.size);
   console.log(
     "Address with the most amount of duplicates (" +
-      maxDuplicateParcels +
+      maxDuplicateParcelCount +
       "): " +
-      parcelMap.search(maxDuplicateParcels)
+      maxDuplicateParcel
   );
-
-  var minCity = null;
-  var minCityCount = null;
-  cityMap.forEach(function(value, key) {
-    if (minCityCount == null || minCityCount < value) {
-      minCityCount = value;
-      minCity = key;
-    }
-  });
-  console.log("City with the least # of addresses (" + minCityCount + "): " + minCity);
+  console.log(
+    "City with the least # of addresses (" + minCityCount + "): " + minCity
+  );
 
   var uniqueAddressList = new Array();
   parcelMap.forEach(function(value, key) {
