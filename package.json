@@ -1,0 +1,16 @@
+{
+  "name": "cape",
+  "version": "1.0.0",
+  "description": "Given this CSV file, please do the following:\r 1. Write out a new CSV containing only the unique entries\r 2. Print out the aggregate statistics for the Following\r    1. Number of duplicate entries in the File\r    2. Grouping of row count by Zip Code\r    3. Grouping of row count by City\r 3. Address with the most amount of duplicates\r 4. City with the least # of addresses\r 5. List of Similar Streets\r Attachments area",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csvtojson": "^2.0.8",
+    "hashmap": "^2.3.0",
+    "json2csv": "^4.3.5"
+  }
+}
