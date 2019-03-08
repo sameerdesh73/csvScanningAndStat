@@ -1,7 +1,7 @@
 var main = function parseInputCsv() {
   console.log(new Date() + " I am inside parseInputCsv");
 
-  const csvFilePath = "ct_parcels_file_2.csv";
+  const csvFilePath = "csv\\ct_parcels_file_2.csv";
   const csv = require("csvtojson");
   csv()
     .fromFile(csvFilePath)
@@ -117,7 +117,7 @@ function generateCsvOfUniqueAddressList(jsonObj) {
     let data = "Learning how to write in a file.";
 
     // Write data in 'Output.txt' .
-    fs.writeFile("UniqueAddress.csv", csv, err => {
+    fs.writeFile("csv\UniqueAddress.csv", csv, err => {
       // In case of a error throw err.
       if (err) throw err;
     });
