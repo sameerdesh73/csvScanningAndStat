@@ -59,7 +59,7 @@ function getStats(jsonObj) {
       newCityCount = cityMap.get(cityKey) + 1;
     }
     cityMap.set(cityKey, newCityCount);
-    if (minCityCount == null || newCityCount < minCityCount ) {
+    if (minCityCount == null || newCityCount < minCityCount) {
       minCityCount = newCityCount;
       minCity = cityKey;
     }
@@ -67,18 +67,33 @@ function getStats(jsonObj) {
 
   console.log(new Date() + " uniqueParcelList.count: " + parcelMap.size);
 
+  console.log();
   console.log(
     "Number of duplicate entries in the File: " +
       (jsonObj.length - parcelMap.size)
   );
-  console.log("Grouping of row count by Zip Code: " + zipcodeMap.size);
-  console.log("Grouping of row count by City: " + cityMap.size);
+
+  console.log();
+  console.log("Grouping of row count by Zip Code, size: " + zipcodeMap.size);
+  zipcodeMap.forEach(function(value, key) {
+    console.log("Zip: " + key + ", Count: " + value);
+  });
+
+  console.log();
+  console.log("Grouping of row count by City, size: " + cityMap.size);
+  cityMap.forEach(function(value, key) {
+    console.log("City: " + key + ", Count: " + value);
+  });
+
+  console.log();
   console.log(
     "Address with the most amount of duplicates (" +
       maxDuplicateParcelCount +
       "): " +
       maxDuplicateParcel
   );
+
+  console.log();
   console.log(
     "City with the least # of addresses (" + minCityCount + "): " + minCity
   );
@@ -117,7 +132,7 @@ function generateCsvOfUniqueAddressList(jsonObj) {
     let data = "Learning how to write in a file.";
 
     // Write data in 'Output.txt' .
-    fs.writeFile("csv\UniqueAddress.csv", csv, err => {
+    fs.writeFile("csvUniqueAddress.csv", csv, err => {
       // In case of a error throw err.
       if (err) throw err;
     });
