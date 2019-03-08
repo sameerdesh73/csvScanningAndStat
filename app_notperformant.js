@@ -1,3 +1,7 @@
+/*
+This is not performance efficient version due to array.includes 
+*/
+
 var main = function parseInputCsv() {
   console.log(new Date() + " I am inside parseInputCsv");
 
