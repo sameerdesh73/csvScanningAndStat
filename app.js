@@ -1,13 +1,13 @@
 var main = function parseInputCsv() {
   console.log(new Date() + " I am inside parseInputCsv");
 
-  const csvFilePath = "csv\\ct_parcels_file_2.csv";
+  const csvFilePath = "csv\\ct_parcels_file_1.csv";
   const csv = require("csvtojson");
   csv()
     .fromFile(csvFilePath)
     .then(jsonObj => {
       var uniqueAddressList = getStats(jsonObj);
-      //generateCsvOfUniqueAddressList(uniqueAddressList);
+      generateCsvOfUniqueAddressList(uniqueAddressList);
     });
 };
 
@@ -15,6 +15,8 @@ function getStats(jsonObj) {
   var HashMap = require("hashmap");
 
   var parcelMap = new HashMap();
+  var uniqueAddressList = new Array();
+
   var zipcodeMap = new HashMap();
   var cityMap = new HashMap();
 
@@ -30,6 +32,7 @@ function getStats(jsonObj) {
     var newParcelCount;
     if (!parcelMap.has(parcelKey)) {
       newParcelCount = 1;
+      uniqueAddressList.push(element);
     } else {
       newParcelCount = parcelMap.get(parcelKey) + 1;
     }
@@ -98,17 +101,12 @@ function getStats(jsonObj) {
     "City with the least # of addresses (" + minCityCount + "): " + minCity
   );
 
-  var uniqueAddressList = new Array();
-  parcelMap.forEach(function(value, key) {
-    uniqueAddressList.push(value);
-  });
-
   return uniqueAddressList;
 }
 
 function generateCsvOfUniqueAddressList(jsonObj) {
   // "id","parcel_apn","sthsnum","ststname","stsuffix","stcity","ststate","stzip"
-  const Json2csvParser = require("json2csv").Parser;
+
   const fields = [
     "id",
     "parcel_apn",
@@ -121,21 +119,19 @@ function generateCsvOfUniqueAddressList(jsonObj) {
   ];
   const opts = { fields };
 
+  const Json2csvParser = require("json2csv").Parser;
+  const parser = new Json2csvParser(opts);
+
   try {
-    const parser = new Json2csvParser(opts);
-    const csv = parser.parse(jsonObj);
-    //console.log(console.log(csv);
-
     const fs = require("fs");
+    let writeStream = fs.createWriteStream("csv\\csvUniqueAddress.csv");
 
-    // Data which will write in a file.
-    let data = "Learning how to write in a file.";
-
-    // Write data in 'Output.txt' .
-    fs.writeFile("csvUniqueAddress.csv", csv, err => {
-      // In case of a error throw err.
-      if (err) throw err;
+    jsonObj.forEach(item => {
+      let csv = parser.parse(item);
+      writeStream.write(csv);
     });
+    // close the stream
+    writeStream.end();
   } catch (err) {
     console.error(err);
   }
